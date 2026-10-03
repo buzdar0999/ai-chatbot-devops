@@ -3,6 +3,7 @@ import os
 
 import anthropic
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 logging.basicConfig(
@@ -11,9 +12,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("chatbot")
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL = "claude-haiku-4-5-20251001"
 
-app = FastAPI(title="AI Chatbot", version="1.1.0")
+app = FastAPI(title="AI Chatbot", version="1.2.0")
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 
@@ -27,7 +29,7 @@ class ChatResponse(BaseModel):
 
 @app.get("/")
 def home():
-    return {"status": "AI chatbot is running"}
+    return FileResponse(os.path.join(BASE_DIR, "static", "index.html"))
 
 
 @app.get("/health")
